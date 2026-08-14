@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>新分頁</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Dynamic / Static Wallpaper Background -->
+  <div id="desktop-bg" aria-hidden="true"></div>
+  <canvas id="dynamic-wallpaper-canvas" class="dynamic-canvas"></canvas>
+
+  <!-- SVG Liquid Optical Refraction Filter -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+    <filter id="liquid-refraction" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence id="fe-turbulence" type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" result="noise"></feTurbulence>
+      <feDisplacementMap id="displacement-map" in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+  </svg>
+
+  <!-- Settings Trigger Button -->
+  <div class="settings-trigger" id="settings-trigger" title="控制中心">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </div>
+
+  <!-- Control Center Root Panel -->
+  <div class="liquid-glass control-panel" id="control-panel">
+    <div class="panel-header">
+      <div class="panel-title" id="lbl-control-panel-title">控制中心</div>
+      <div class="panel-close-btn" id="close-control-panel">✕</div>
+    </div>
+
+    <!-- Segmented Tab Switcher -->
+    <div class="settings-segmented-nav">
+      <button class="segmented-btn active" data-tab="tab-appearance" id="tab-btn-appearance">外觀主題</button>
+      <button class="segmented-btn" data-tab="tab-wallpaper" id="tab-btn-wallpaper">桌布背景</button>
+      <button class="segmented-btn" data-tab="tab-optics" id="tab-btn-optics">玻璃光學</button>
+      <button class="segmented-btn" data-tab="tab-layout" id="tab-btn-layout">版面小工具</button>
+      <button class="segmented-btn" data-tab="tab-search" id="tab-btn-search">搜尋引擎</button>
+    </div>
+
+    <!-- Tab 1: Appearance & Colors -->
+    <div class="settings-tab-content active" id="tab-appearance">
+      <div class="panel-section-title" id="lbl-sec-language">多國語言支援</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-lang-select">介面語言</span></div>
+        <div class="custom-dropdown" id="language-dropdown" data-value="auto">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label" id="lang-dropdown-current">自動偵測 (Auto)</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="auto">自動偵測 (Auto)</div>
+            <div class="custom-dropdown-item" data-value="zh-TW">繁體中文 (台灣)</div>
+            <div class="custom-dropdown-item" data-value="zh-CN">简体中文</div>
+            <div class="custom-dropdown-item" data-value="en">English (US)</div>
+            <div class="custom-dropdown-item" data-value="ja">日本語</div>
+            <div class="custom-dropdown-item" data-value="ko">한국어</div>
+            <div class="custom-dropdown-item" data-value="de">Deutsch</div>
+            <div class="custom-dropdown-item" data-value="fr">Français</div>
+            <div class="custom-dropdown-item" data-value="es">Español</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-colors">色彩與主題工坊</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-auto-contrast">智慧雙向色彩自動調節</span>
+          <div class="custom-toggle active" id="auto-color-toggle" title="自動依桌布明暗調整文字與主題對比度"></div>
+        </div>
+        <div class="control-sublabel" id="lbl-auto-contrast-sub">載入桌布時自動計算明度，智慧同步背景色、主題色與文字對比色</div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-classic-palettes">經典色彩主題</span></div>
+        <div class="palette-grid compact" id="palette-grid-root"></div>
+      </div>
+
+      <div class="control-group">
+        <div class="custom-btn theme-btn" id="open-color-studio">開啟進階調色盤與 HEX 自訂</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-typography">文字排版與字體</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-sys-font">全域系統字體</span></div>
+        <div class="custom-dropdown" id="font-family-dropdown" data-value='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'>
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">現代系統無襯線 (SF / Sans-Serif)</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'>現代系統無襯線</div>
+            <div class="custom-dropdown-item" data-value='"Inter", sans-serif'>Inter 國際字體</div>
+            <div class="custom-dropdown-item" data-value='"Fira Code", monospace'>Fira Code 等寬極客風</div>
+            <div class="custom-dropdown-item" data-value='"Noto Sans TC", sans-serif'>思源黑體 (Noto Sans)</div>
+            <div class="custom-dropdown-item" data-value='"微軟正黑體", "Microsoft JhengHei", sans-serif'>微軟正黑體</div>
+            <div class="custom-dropdown-item" data-value='Georgia, serif'>Georgia 典雅襯線體</div>
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-font-weight">字體粗細</span><span class="val-badge" id="font-weight-val">500</span></div>
+        <div class="custom-slider" data-id="font-weight" data-min="100" data-max="900" data-val="500" data-step="100">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-font-size">全域字體大小</span><span class="val-badge" id="font-size-val">16px</span></div>
+        <div class="custom-slider" data-id="font-size" data-min="12" data-max="24" data-val="16">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Wallpaper & Background -->
+    <div class="settings-tab-content" id="tab-wallpaper">
+      <div class="panel-section-title" id="lbl-sec-custom-upload">自訂圖片上傳</div>
+      <div class="control-group">
+        <div class="custom-dropzone" id="bg-dropzone">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <div id="lbl-dropzone-text">點擊或拖放圖片至此處</div>
+          <div style="font-size: 10px; opacity: 0.6; margin-top: 4px;" id="lbl-dropzone-sub">支援高解析度圖檔，自動儲存至本機 IndexedDB</div>
+        </div>
+      </div>
+      <div class="control-group flex-row">
+        <div class="custom-btn secondary-btn sm" id="clear-bg-btn">清除圖片桌布</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-grad">自訂漸層桌布生成器</div>
+      <div class="control-group">
+        <div class="custom-gradient-preview" id="custom-gradient-preview" style="height: 64px; border-radius: 12px; margin-bottom: 10px; background: linear-gradient(135deg, #0A84FF, #BF5AF2);"></div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-grad-type">漸層類型</span></div>
+        <div class="custom-dropdown" id="gradient-type-dropdown" data-value="linear">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">線性漸層 (Linear)</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="linear">線性漸層 (Linear)</div>
+            <div class="custom-dropdown-item" data-value="radial">徑向光暈 (Radial)</div>
+            <div class="custom-dropdown-item" data-value="conic">圓錐旋轉 (Conic)</div>
+          </div>
+        </div>
+      </div>
+      <div class="control-group flex-row">
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-grad-start">起始色</span></div>
+          <div class="color-hex-row" style="margin-top: 2px;">
+            <input type="color" id="grad-color-1" value="#0A84FF" class="color-input-native">
+            <span class="custom-editable" id="grad-hex-1" contenteditable="true" spellcheck="false">#0A84FF</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-grad-end">終止色</span></div>
+          <div class="color-hex-row" style="margin-top: 2px;">
+            <input type="color" id="grad-color-2" value="#BF5AF2" class="color-input-native">
+            <span class="custom-editable" id="grad-hex-2" contenteditable="true" spellcheck="false">#BF5AF2</span>
+          </div>
+        </div>
+      </div>
+      <div class="control-group" id="grad-angle-group">
+        <div class="control-label"><span id="lbl-grad-angle">漸層角度</span><span class="val-badge" id="grad-angle-val">135°</span></div>
+        <div class="custom-slider" data-id="grad-angle" data-min="0" data-max="360" data-val="135">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="custom-btn theme-btn" id="apply-custom-gradient-btn">套用自訂漸層</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-wp-optics">背景光影與景深</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-wp-overlay">背景遮罩濃度</span><span class="val-badge" id="overlay-val">15%</span></div>
+        <div class="custom-slider" data-id="overlay" data-min="0" data-max="90" data-val="15">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-wp-blur">背景景深模糊</span><span class="val-badge" id="bg-blur-val">0px</span></div>
+        <div class="custom-slider" data-id="bg-blur" data-min="0" data-max="40" data-val="0">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Liquid Glass Optics -->
+    <div class="settings-tab-content" id="tab-optics">
+      <div class="panel-section-title" id="lbl-sec-optics">液態玻璃核心光學屬性</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-glass-blur">毛玻璃景深模糊</span><span class="val-badge" id="blur-val">40px</span></div>
+        <div class="custom-slider" data-id="blur" data-min="0" data-max="64" data-val="40">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-glass-opacity">玻璃基底透明度</span><span class="val-badge" id="opacity-val">14%</span></div>
+        <div class="custom-slider" data-id="opacity" data-min="0" data-max="60" data-val="14">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-border-opacity">邊框光澤不透明度</span><span class="val-badge" id="border-opacity-val">12%</span></div>
+        <div class="custom-slider" data-id="border-opacity" data-min="0" data-max="100" data-val="12">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-saturate">色彩飽和度提升</span><span class="val-badge" id="saturate-val">140%</span></div>
+        <div class="custom-slider" data-id="saturate" data-min="50" data-max="300" data-val="140">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-displacement">SVG 噪點折射</span><span class="val-badge" id="displacement-val">8</span></div>
+        <div class="custom-slider" data-id="displacement" data-min="0" data-max="40" data-val="8">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-radius">圓角半徑</span><span class="val-badge" id="radius-val">22px</span></div>
+        <div class="custom-slider" data-id="radius" data-min="0" data-max="48" data-val="22">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Layout & Widgets & Dock -->
+    <div class="settings-tab-content" id="tab-layout">
+      <div class="panel-section-title" id="lbl-sec-widget-manage">小工具管理</div>
+      <div class="control-group">
+        <div class="custom-btn theme-btn" id="open-widget-hub">開啟小工具庫</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-drag-layout">自由拖曳與佈局控制</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-toggle-edit">開啟自由拖曳與座標微調</span>
+          <div class="custom-toggle" id="toggle-edit-mode"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-toggle-mouse">滑鼠游標光澤反射效果</span>
+          <div class="custom-toggle active" id="mouse-highlight-toggle"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-reset-layout">重置為預設置中佈局</span>
+          <div class="custom-btn secondary-btn sm" id="reset-layout-btn">重置佈局</div>
+        </div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-dock">自訂快捷連結 (Dock)</div>
+      <div class="control-group">
+        <div class="dock-links-list" id="dock-links-list">
+          <!-- Dynamically populated -->
+        </div>
+        <div class="control-group flex-row" style="margin-top: 10px;">
+          <div class="custom-btn secondary-btn sm" id="add-dock-item-btn">+ 新增連結</div>
+          <div class="custom-btn secondary-btn sm" id="reset-dock-btn">恢復預設連結</div>
+        </div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-backup">自訂配置備份與匯出</div>
+      <div class="control-group flex-row">
+        <div class="custom-btn secondary-btn sm" id="export-config-btn">匯出設定 JSON</div>
+        <div class="custom-btn secondary-btn sm" id="import-config-btn">匯入設定 JSON</div>
+        <input type="file" id="import-config-file" accept=".json" style="display: none;">
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-reset-all">全域重置</div>
+      <div class="control-group">
+        <button class="custom-btn reset-all-btn" id="reset-all-settings-btn">重置所有設定為預設值</button>
+      </div>
+    </div>
+
+    <!-- Tab 5: Search Engine Preferences -->
+    <div class="settings-tab-content" id="tab-search">
+      <div class="panel-section-title" id="lbl-sec-search-engine">預設搜尋引擎選擇</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-choose-engine">選擇預設搜尋引擎</span></div>
+        <div class="custom-dropdown" id="settings-engine-dropdown" data-value="google">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">Google 搜尋</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="google">Google</div>
+            <div class="custom-dropdown-item" data-value="bing">Microsoft Bing</div>
+            <div class="custom-dropdown-item" data-value="duckduckgo">DuckDuckGo</div>
+            <div class="custom-dropdown-item" data-value="brave">Brave Search</div>
+            <div class="custom-dropdown-item" data-value="ecosia">Ecosia</div>
+            <div class="custom-dropdown-item" data-value="yahoo">Yahoo! 搜尋</div>
+            <div class="custom-dropdown-item" data-value="baidu">Baidu 百度</div>
+            <div class="custom-dropdown-item" data-value="github">GitHub 程式庫</div>
+            <div class="custom-dropdown-item" data-value="youtube">YouTube 影片</div>
+            <div class="custom-dropdown-item" data-value="custom">自訂搜尋引擎 (Custom URL)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-group" id="custom-engine-settings-group" style="display: none;">
+        <div class="panel-section-title">自訂搜尋引擎設定</div>
+        <div class="control-group">
+          <div class="control-label"><span>自訂引擎名稱</span></div>
+          <input type="text" id="custom-engine-name" class="custom-panel-input" placeholder="例如：Kagi Search">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span>搜尋 URL 範本 (以 %s 代表關鍵字)</span></div>
+          <input type="text" id="custom-engine-url" class="custom-panel-input" placeholder="https://kagi.com/search?q=%s">
+        </div>
+        <div class="custom-btn theme-btn sm" id="save-custom-engine-btn">儲存自訂搜尋引擎</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-search-exp">搜尋體驗設定</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-search-newtab">在新分頁開啟搜尋結果</span>
+          <div class="custom-toggle active" id="search-newtab-toggle"></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-search-history">啟用搜尋歷史記錄清單</span>
+          <div class="custom-toggle active" id="search-history-toggle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget Hub Modal -->
+  <div class="widget-hub-modal" id="widget-hub-modal">
+    <div class="liquid-glass widget-hub-content">
+      <div class="panel-header">
+        <div class="panel-title" id="lbl-hub-title">小工具庫</div>
+        <div class="panel-close-btn" id="close-widget-hub">✕</div>
+      </div>
+      <div class="widget-item">
+        <div class="widget-item-info">
+          <div class="widget-item-title" id="lbl-hub-clock-title">時鐘與精緻日期</div>
+          <div class="widget-item-desc" id="lbl-hub-clock-desc">精緻時間顯示，支援全域多國語言</div>
+        </div>
+        <div class="custom-btn theme-btn sm" id="toggle-clock-btn">切換顯示</div>
+      </div>
+      <div class="widget-item">
+        <div class="widget-item-info">
+          <div class="widget-item-title" id="lbl-hub-search-title">Spotlight 搜尋與歷史記錄</div>
+          <div class="widget-item-desc" id="lbl-hub-search-desc">支援多搜尋引擎、智慧預測與歷史關鍵字自動回顯</div>
+        </div>
+        <div class="custom-btn theme-btn sm" id="toggle-search-btn">切換顯示</div>
+      </div>
+      <div class="widget-item">
+        <div class="widget-item-info">
+          <div class="widget-item-title" id="lbl-hub-notes-title">液態備忘錄</div>
+          <div class="widget-item-desc" id="lbl-hub-notes-desc">隨時在桌面上自由記錄想法與 Markdown 清單</div>
+        </div>
+        <div class="custom-btn theme-btn sm" id="add-note-btn">+ 新增備忘</div>
+      </div>
+      <div class="custom-btn theme-btn" id="done-widget-hub" style="margin-top: 18px;">完成</div>
+    </div>
+  </div>
+
+  <!-- Color Studio Modal -->
+  <div class="widget-hub-modal" id="color-studio-modal">
+    <div class="liquid-glass color-studio-content">
+      <div class="panel-header">
+        <div class="panel-title" id="lbl-studio-title">色彩工坊</div>
+        <div class="panel-close-btn" id="close-color-studio">✕</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-studio-palettes">精選調色系列</div>
+      <div class="palette-grid" id="palette-grid"></div>
+
+      <div class="panel-section-title" id="lbl-studio-custom">自訂色彩微調</div>
+      <div class="color-target-tabs">
+        <div class="color-target-tab active" data-target="accent">主題色</div>
+        <div class="color-target-tab" data-target="text">文字色</div>
+        <div class="color-target-tab" data-target="bg">背景色</div>
+      </div>
+
+      <div class="color-picker">
+        <div class="color-picker-preview" id="color-picker-preview"></div>
+        <div class="color-picker-sv" id="color-picker-sv">
+          <div class="color-picker-sv-cursor" id="color-picker-sv-cursor"></div>
+        </div>
+        <div class="control-label" style="margin-top: 10px;"><span>色相</span></div>
+        <div class="custom-slider hue-slider" id="color-picker-hue" data-id="hue" data-min="0" data-max="360" data-val="210">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+        <div class="color-hex-row">
+          <span>HEX 色碼</span>
+          <span class="custom-editable" id="color-picker-hex" contenteditable="true" spellcheck="false">#0A84FF</span>
+        </div>
+      </div>
+
+      <div class="color-current-row">
+        <div class="color-swatch-item"><span>主題色</span><div class="color-swatch" id="swatch-accent"></div><span class="custom-editable color-hex-mini" id="hex-accent-val" contenteditable="true" spellcheck="false">#0A84FF</span></div>
+        <div class="color-swatch-item"><span>文字色</span><div class="color-swatch" id="swatch-text"></div><span class="custom-editable color-hex-mini" id="hex-text-val" contenteditable="true" spellcheck="false">#F5F5F7</span></div>
+        <div class="color-swatch-item"><span>背景色</span><div class="color-swatch" id="swatch-bg"></div><span class="custom-editable color-hex-mini" id="hex-bg-val" contenteditable="true" spellcheck="false">#000000</span></div>
+      </div>
+
+      <div class="custom-btn theme-btn" id="done-color-studio">完成設定</div>
+    </div>
+  </div>
+
+  <!-- Dock Item Editor Modal (Guaranteed High Contrast in Light/Dark Themes) -->
+  <div class="widget-hub-modal" id="dock-edit-modal">
+    <div class="liquid-glass dock-manager-content">
+      <div class="panel-header">
+        <div class="panel-title" id="dock-modal-title">新增快捷連結</div>
+        <div class="panel-close-btn" id="close-dock-modal">✕</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-title">標題名稱</span></div>
+        <input type="text" id="dock-input-title" class="dock-modal-input" placeholder="例如：GitHub">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-url">網址連結</span></div>
+        <input type="text" id="dock-input-url" class="dock-modal-input" placeholder="https://...">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-icon">圖示縮寫 (1-3字)</span></div>
+        <input type="text" id="dock-input-icon" class="dock-modal-input" maxlength="3" placeholder="例如：GH">
+      </div>
+      <div class="control-group flex-row" style="margin-top: 16px;">
+        <div class="custom-btn theme-btn" id="save-dock-item-btn">儲存連結</div>
+        <div class="custom-btn secondary-btn" id="cancel-dock-item-btn">取消</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clock Card Component -->
+  <div class="liquid-glass draggable-card" id="clock-card">
+    <div class="card-tools">
+      <div class="custom-btn theme-btn xs align-center-btn">置中</div>
+      <span class="tools-label">X:</span>
+      <div class="custom-number-box"><span class="num-btn dec">−</span><span class="custom-editable pos-x" contenteditable="true" spellcheck="false">0</span><span class="num-btn inc">+</span></div>
+      <span class="tools-label">Y:</span>
+      <div class="custom-number-box"><span class="num-btn dec">−</span><span class="custom-editable pos-y" contenteditable="true" spellcheck="false">0</span><span class="num-btn inc">+</span></div>
+    </div>
+    <div class="card-body">
+      <div class="time-display" id="time-display">00:00</div>
+      <div class="date-display" id="date-display">2026年 8月 14日</div>
+    </div>
+  </div>
+
+  <!-- Spotlight Search Card Component -->
+  <div class="liquid-glass draggable-card" id="search-card">
+    <div class="card-tools">
+      <div class="custom-btn theme-btn xs align-center-btn">置中</div>
+      <span class="tools-label">X:</span>
+      <div class="custom-number-box"><span class="num-btn dec">−</span><span class="custom-editable pos-x" contenteditable="true" spellcheck="false">0</span><span class="num-btn inc">+</span></div>
+      <span class="tools-label">Y:</span>
+      <div class="custom-number-box"><span class="num-btn dec">−</span><span class="custom-editable pos-y" contenteditable="true" spellcheck="false">0</span><span class="num-btn inc">+</span></div>
+    </div>
+    <div class="card-body">
+      <div class="search-wrapper" id="search-wrapper">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <div class="custom-dropdown engine-dropdown" id="engine-dropdown" data-value="google">
+          <div class="custom-dropdown-trigger compact"><span class="custom-dropdown-label">Google</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu drop-up">
+            <div class="custom-dropdown-item active" data-value="google">Google</div>
+            <div class="custom-dropdown-item" data-value="bing">Bing</div>
+            <div class="custom-dropdown-item" data-value="duckduckgo">DuckDuckGo</div>
+            <div class="custom-dropdown-item" data-value="github">GitHub</div>
+            <div class="custom-dropdown-item" data-value="baidu">Baidu</div>
+            <div class="custom-dropdown-item" data-value="youtube">YouTube</div>
+          </div>
+        </div>
+        <div class="search-input-box" id="search-input-box" contenteditable="true" spellcheck="false" data-placeholder="搜尋或輸入網址..."></div>
+        <div class="clear-search-btn" id="clear-search-btn" title="清空輸入">✕</div>
+      </div>
+
+      <!-- Auto-loading Search History Dropdown -->
+      <div class="search-history-dropdown" id="search-history-dropdown">
+        <div class="search-history-header">
+          <span class="search-history-title">歷史搜尋紀錄</span>
+          <button class="clear-all-history-btn" id="clear-all-history-btn">清除全部</button>
+        </div>
+        <div class="search-history-list" id="search-history-list">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Dock (User Customizable) -->
+  <div class="liquid-dock" id="liquid-dock">
+    <!-- Injected dynamically from storage -->
+  </div>
+
+  <script src="indexeddb.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>

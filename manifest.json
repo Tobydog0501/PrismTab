@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Liquid Glass - 極致液態玻璃新分頁",
+  "version": "5.3.0",
+  "description": "極致液態玻璃桌面、歷史搜尋智慧預測、自動雙向色彩調節、多國語言與自訂小工具新分頁。",
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
