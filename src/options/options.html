@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrismTab - 設定</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+Mono+TC:wght@400;700&family=Lexend:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Noto+Sans+TC:wght@400;600;700&family=Noto+Serif+TC:wght@400;700&family=Orbitron:wght@600;800&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/styles.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      box-sizing: border-box;
+      background: #07090E;
+      color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .options-container {
+      width: 100%;
+      max-width: 760px;
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      padding: 24px sm:32px;
+      box-sizing: border-box;
+    }
+    .options-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .options-title-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .options-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #00C6FF, #0072FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      color: white;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px;
+      border-radius: 12px;
+    }
+    .nav-tab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #94A3B8;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .nav-tab-btn.active {
+      background: #0284C7;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+    .sec-block {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .sec-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #38BDF8;
+      margin-bottom: 14px;
+    }
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .field-row:last-child {
+      margin-bottom: 0;
+    }
+    .field-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #E2E8F0;
+    }
+    .field-input {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+    .action-btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: #0284C7;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover {
+      background: #0369A1;
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #E2E8F0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+  </style>
+  <link rel="icon" href="../../assets/icons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="../../assets/icons/icon-16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../assets/icons/icon-48.png" sizes="48x48">
+</head>
+<body>
+  <div class="options-container">
+    <div class="options-header">
+      <div class="options-title-box">
+        <div class="options-logo">PT</div>
+        <div>
+          <h1 style="font-size: 18px; font-weight: 800; margin: 0;">PrismTab 控制中心</h1>
+          <p style="font-size: 12px; color: #94A3B8; margin: 2px 0 0 0;">液態玻璃美學與自訂新分頁配置</p>
+        </div>
+      </div>
+      <div>
+        <button id="btn-open-newtab" class="btn-secondary">開啟新分頁</button>
+      </div>
+    </div>
+
+    <!-- 3-Category Tab Bar: 外觀, 工具, 進階功能 -->
+    <div class="nav-tabs">
+      <button class="nav-tab-btn active" data-tab="tab-opt-appearance">外觀</button>
+      <button class="nav-tab-btn" data-tab="tab-opt-tools">工具</button>
+      <button class="nav-tab-btn" data-tab="tab-opt-advanced">進階功能</button>
+    </div>
+
+    <!-- 1. 外觀 -->
+    <div id="tab-opt-appearance" class="tab-pane">
+      <!-- 語言 -->
+      <div class="sec-block">
+        <div class="sec-title">語言</div>
+        <div class="field-row">
+          <span class="field-label">介面語言</span>
+          <select id="opt-language" class="field-input">
+            <option value="zh-TW">繁體中文</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="de">Deutsch</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 主題 -->
+      <div class="sec-block">
+        <div class="sec-title">主題</div>
+        <div class="field-row">
+          <span class="field-label">背景色</span>
+          <input type="color" id="opt-bg-color" value="#000000" style="cursor: pointer;">
+        </div>
+        <div class="field-row">
+          <span class="field-label">文字色</span>
+          <input type="color" id="opt-text-color" value="#FFFFFF" style="cursor: pointer;">
+        </div>
+      </div>
+
+      <!-- 文字 -->
+      <div class="sec-block">
+        <div class="sec-title">文字</div>
+        <div class="field-row">
+          <span class="field-label">字體</span>
+          <select id="opt-font-select" class="field-input" style="max-width: 240px;">
+            <option value="System Sans-Serif">System Sans-Serif</option>
+            <option value="Inter">Inter</option>
+            <option value="Outfit">Outfit</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+            <option value="Lexend">Lexend</option>
+            <option value="JetBrains Mono">JetBrains Mono</option>
+            <option value="Fira Code">Fira Code</option>
+            <option value="Noto Sans TC">Noto Sans TC</option>
+            <option value="Noto Serif TC">Noto Serif TC</option>
+            <option value="LXGW WenKai">LXGW WenKai</option>
+            <option value="Microsoft JhengHei">Microsoft JhengHei</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="Cinzel">Cinzel</option>
+            <option value="Orbitron">Orbitron</option>
+            <option value="Montserrat">Montserrat</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <span class="field-label">粗細</span>
+          <input type="range" id="opt-font-weight" min="100" max="900" step="100" value="500">
+        </div>
+        <div class="field-row">
+          <span class="field-label">大小</span>
+          <input type="range" id="opt-font-size" min="12" max="28" value="16">
+        </div>
+      </div>
+
+      <!-- 背景 -->
+      <div class="sec-block">
+        <div class="sec-title">背景</div>
+        <div class="field-row">
+          <span class="field-label">上傳 (本機背景檔案)</span>
+          <input type="file" id="opt-bg-file" accept="image/*,video/*" class="field-input">
+        </div>
+        <div class="field-row">
+          <span class="field-label">生成 (背景模式)</span>
+          <select id="opt-bg-mode" class="field-input">
+            <option value="solid">單色背景</option>
+            <option value="gradient">自訂漸層</option>
+            <option value="shader-wave">波紋動態生成</option>
+            <option value="shader-aurora">極光動態生成</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <span class="field-label">細節 (背景遮罩濃度)</span>
+          <input type="range" id="opt-overlay-opacity" min="0" max="90" value="0">
+        </div>
+        <div class="field-row">
+          <span class="field-label">細節 (背景景深模糊)</span>
+          <input type="range" id="opt-bg-blur" min="0" max="40" value="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 工具 -->
+    <div id="tab-opt-tools" class="tab-pane" style="display: none;">
+      <!-- 時鐘與日期 -->
+      <div class="sec-block">
+        <div class="sec-title">時鐘與日期</div>
+        <div class="field-row">
+          <span class="field-label">啟用時鐘與日期</span>
+          <input type="checkbox" id="opt-show-clock" checked>
+        </div>
+        <div class="field-row">
+          <span class="field-label">24 小時制</span>
+          <input type="checkbox" id="opt-clock-24h" checked>
+        </div>
+        <div class="field-row">
+          <span class="field-label">顯示秒數</span>
+          <input type="checkbox" id="opt-clock-seconds">
+        </div>
+        <div class="field-row">
+          <span class="field-label">顯示日期</span>
+          <input type="checkbox" id="opt-clock-date" checked>
+        </div>
+      </div>
+
+      <!-- 搜尋列 -->
+      <div class="sec-block">
+        <div class="sec-title">搜尋列</div>
+        <div class="field-row">
+          <span class="field-label">啟用搜尋列</span>
+          <input type="checkbox" id="opt-show-search" checked>
+        </div>
+        <div class="field-row">
+          <span class="field-label">預設搜尋引擎</span>
+          <select id="opt-search-engine" class="field-input">
+            <option value="google">Google</option>
+            <option value="bing">Microsoft Bing</option>
+            <option value="duckduckgo">DuckDuckGo</option>
+            <option value="brave">Brave Search</option>
+            <option value="ecosia">Ecosia</option>
+            <option value="yahoo">Yahoo</option>
+            <option value="baidu">Baidu</option>
+            <option value="github">GitHub</option>
+            <option value="youtube">YouTube</option>
+          </select>
+        </div>
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div class="field-label" style="margin-bottom: 8px; opacity: 0.9;">搜尋設定</div>
+          <div class="field-row">
+            <span class="field-label">在新分頁開啟搜尋結果</span>
+            <input type="checkbox" id="opt-search-newtab" checked>
+          </div>
+          <div class="field-row">
+            <span class="field-label">啟用搜尋歷史記錄清單</span>
+            <input type="checkbox" id="opt-search-history" checked>
+          </div>
+        </div>
+      </div>
+
+      <!-- 導航器 -->
+      <div class="sec-block">
+        <div class="sec-title">導航器</div>
+        <div class="field-row">
+          <span class="field-label">啟用導航器</span>
+          <input type="checkbox" id="opt-show-dock" checked>
+        </div>
+        <div style="margin-top: 8px; margin-bottom: 10px;">
+          <div class="field-label" style="margin-bottom: 4px;">連結清單</div>
+          <p style="font-size: 11px; color: #94A3B8; line-height: 1.5;">快捷連結的新增、編輯與刪除請至新分頁控制中心「工具 → 導航器」進行管理。</p>
+        </div>
+        <div style="padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div class="field-label" style="margin-bottom: 8px; opacity: 0.9;">導航設定</div>
+          <div class="field-row">
+            <span class="field-label">圖示外觀形狀</span>
+            <select id="opt-dock-shape" class="field-input">
+              <option value="squircle">圓角矩形</option>
+              <option value="circle">圓形</option>
+              <option value="square">正方形</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <span class="field-label">圖示尺寸</span>
+            <select id="opt-dock-size" class="field-input">
+              <option value="sm">小</option>
+              <option value="md" selected>中</option>
+              <option value="lg">大</option>
+            </select>
+          </div>
+          <div class="field-row">
+            <span class="field-label">顯示文字標籤</span>
+            <input type="checkbox" id="opt-dock-labels" checked>
+          </div>
+          <div class="field-row">
+            <span class="field-label">在新分頁開啟連結</span>
+            <input type="checkbox" id="opt-dock-newtab" checked>
+          </div>
+        </div>
+      </div>
+
+      <!-- 更多配置 (註1：讓使用者自行寫程式製作，卡片風格由我們自行顧及) -->
+      <div class="sec-block">
+        <div class="sec-title">更多配置</div>
+        <p style="font-size: 12px; color: #94A3B8; line-height: 1.5; margin-bottom: 12px;">
+          讓使用者自行寫程式製作。卡片風格由系統自動套用液態玻璃美學。
+        </p>
+        <div class="field-row">
+          <span class="field-label">自訂程式卡片代碼 (HTML/JS)</span>
+        </div>
+        <textarea id="opt-custom-widget-code" rows="4" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); color: #38BDF8; font-family: monospace; font-size: 12px; padding: 8px; border-radius: 8px; outline: none;" placeholder="<div><h3>自訂卡片代碼</h3></div>"></textarea>
+      </div>
+    </div>
+
+    <!-- 3. 進階功能 -->
+    <div id="tab-opt-advanced" class="tab-pane" style="display: none;">
+      <!-- 快捷鍵 -->
+      <div class="sec-block">
+        <div class="sec-title">快捷鍵</div>
+        <p style="font-size: 12px; color: #94A3B8; line-height: 1.6; margin-bottom: 8px;">
+          快捷鍵可於新分頁控制中心「進階功能 → 快捷鍵」中即時自訂。預設：
+        </p>
+        <div class="field-row"><span class="field-label">開啟控制中心</span><span style="font-size:12px;opacity:0.8;">Ctrl + ,</span></div>
+        <div class="field-row"><span class="field-label">聚焦搜尋列</span><span style="font-size:12px;opacity:0.8;">Ctrl + K</span></div>
+        <div class="field-row"><span class="field-label">重置佈局</span><span style="font-size:12px;opacity:0.8;">Ctrl + Shift + R</span></div>
+      </div>
+
+      <!-- 設定同步 -->
+      <div class="sec-block">
+        <div class="sec-title">設定同步</div>
+        <div style="margin-bottom: 12px;">
+          <div class="field-label" style="margin-bottom: 6px;">本地</div>
+          <div class="field-row" style="justify-content: flex-start; gap: 10px;">
+            <button id="opt-export-btn" class="btn-secondary" style="padding: 6px 12px;">匯出設定 JSON</button>
+            <button id="opt-import-btn" class="btn-secondary" style="padding: 6px 12px;">匯入設定 JSON</button>
+            <input type="file" id="opt-import-file" accept=".json" style="display: none;">
+          </div>
+        </div>
+        <div>
+          <div class="field-label" style="margin-bottom: 6px;">雲端（Chrome Sync 跨裝置同步）</div>
+          <div class="field-row">
+            <span class="field-label" style="font-weight: 400; opacity: 0.85;">啟用 Chrome 雲端同步</span>
+            <input type="checkbox" id="opt-chrome-sync" checked>
+          </div>
+          <p style="font-size: 11px; color: #94A3B8; margin-top: 4px;">需登入 Chrome 帳號，並在 chrome://settings/syncSetup 啟用擴充功能同步。</p>
+        </div>
+      </div>
+
+      <!-- 網站注入 -->
+      <div class="sec-block">
+        <div class="sec-title">網站注入</div>
+        <div class="field-row" style="flex-direction: column; align-items: flex-start;">
+          <span class="field-label">JavaScript</span>
+          <textarea id="opt-custom-js" rows="3" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); color: #38BDF8; font-family: monospace; font-size: 12px; padding: 8px; border-radius: 8px; outline: none; margin-top: 6px;" placeholder="// 自訂 JavaScript 代碼（謹慎使用）"></textarea>
+        </div>
+        <div class="field-row" style="flex-direction: column; align-items: flex-start; margin-top: 12px;">
+          <span class="field-label">CSS</span>
+          <textarea id="opt-custom-css" rows="3" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); color: #38BDF8; font-family: monospace; font-size: 12px; padding: 8px; border-radius: 8px; outline: none; margin-top: 6px;" placeholder="/* 自訂 CSS 樣式代碼 */"></textarea>
+        </div>
+      </div>
+
+      <!-- 液態玻璃光學 -->
+      <div class="sec-block">
+        <div class="sec-title">液態玻璃光學</div>
+        <div class="field-row">
+          <span class="field-label">毛玻璃景深模糊</span>
+          <input type="range" id="opt-glass-blur" min="0" max="64" value="40">
+        </div>
+        <div class="field-row">
+          <span class="field-label">玻璃基底透明度</span>
+          <input type="range" id="opt-glass-opacity" min="0" max="60" value="14">
+        </div>
+        <div class="field-row">
+          <span class="field-label">邊框光澤不透明度</span>
+          <input type="range" id="opt-border-opacity" min="0" max="80" value="12">
+        </div>
+        <div class="field-row">
+          <span class="field-label">色彩飽和度提升</span>
+          <input type="range" id="opt-glass-saturate" min="50" max="250" value="125">
+        </div>
+        <div class="field-row">
+          <span class="field-label">噪點折射</span>
+          <input type="range" id="opt-noise-refraction" min="0" max="20" value="8">
+        </div>
+        <div class="field-row">
+          <span class="field-label">圓角半徑</span>
+          <input type="range" id="opt-glass-radius" min="4" max="40" value="20">
+        </div>
+      </div>
+
+      <!-- 全域重置 -->
+      <div class="sec-block">
+        <div class="sec-title" style="color: #F87171;">全域重置</div>
+        <p style="font-size: 12px; color: #94A3B8; margin-bottom: 12px;">將所有外觀、工具與進階功能重置為預設狀態。</p>
+        <button id="opt-reset-btn" class="btn-secondary" style="color: #F87171; border-color: rgba(248, 113, 113, 0.4);">全域重置為預設值</button>
+      </div>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="action-btn-row">
+      <button id="btn-save-all" class="btn-primary">儲存所有設定 (Save Settings)</button>
+      <span id="save-feedback" style="font-size: 13px; color: #4ADE80; align-self: center; display: none;">已成功儲存！</span>
+    </div>
+  </div>
+
+  <script src="indexeddb.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

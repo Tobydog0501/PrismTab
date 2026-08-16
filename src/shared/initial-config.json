@@ -1,0 +1,104 @@
+{
+  "appName": "PrismTab",
+  "version": "0.0.0",
+  "exportedAt": "2026-08-16T13:14:38.363Z",
+  "customizedState": {
+    "textColor": "#000000",
+    "bgColor": "#FFFFFF",
+    "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"Segoe UI\", Roboto, sans-serif",
+    "glassBlur": 40,
+    "glassOpacity": 0.14,
+    "borderOpacity": 0.12,
+    "glassRadius": 20,
+    "glassSaturate": 125,
+    "glassContrast": 100,
+    "displacementScale": 8,
+    "widgets": {
+      "showClock": true,
+      "showSearch": true,
+      "showDock": true
+    },
+    "clockConfig": {
+      "format24h": true,
+      "showSeconds": false,
+      "showDate": true,
+      "showGreeting": true,
+      "customGreeting": "",
+      "fontSize": 1
+    },
+    "dockConfig": {
+      "iconShape": "squircle",
+      "iconSize": "md",
+      "showLabels": true,
+      "openInNewTab": true
+    },
+    "bookmarks": [
+      {
+        "id": "bm-1",
+        "title": "Google",
+        "url": "https://google.com",
+        "color": "#4285F4"
+      },
+      {
+        "id": "bm-2",
+        "title": "YouTube",
+        "url": "https://youtube.com",
+        "color": "#FF0000"
+      },
+      {
+        "id": "bm-3",
+        "title": "GitHub",
+        "url": "https://github.com",
+        "color": "#24292E"
+      },
+      {
+        "id": "bm-4",
+        "title": "Gmail",
+        "url": "https://mail.google.com",
+        "color": "#EA4335"
+      },
+      {
+        "id": "bm-5",
+        "title": "Notion",
+        "url": "https://notion.so",
+        "color": "#000000"
+      }
+    ],
+    "customWidgets": [
+      {
+        "id": "cw-code-demo",
+        "title": "自訂程式小工具",
+        "type": "html",
+        "x": 40,
+        "y": 430,
+        "w": 280,
+        "h": 120,
+        "enabled": true,
+        "htmlContent": "<div style=\"padding:4px; font-size:12px; line-height:1.6;\"><strong>HTML/JS 自訂卡片</strong><p style=\"opacity:0.75; margin-top:4px;\">卡片玻璃風格由系統自動套用，您可自由編寫程式。</p></div>"
+      }
+    ],
+    "customEngines": [],
+    "advancedSettings": {
+      "optics": {
+        "glassBlur": 40,
+        "glassOpacity": 0.14,
+        "borderOpacity": 0.12,
+        "saturationBoost": 125,
+        "noiseRefraction": 8,
+        "glassRadius": 20
+      },
+      "customCss": ""
+    },
+    "backgroundConfig": {
+      "mode": "solid",
+      "solidColor": "#FFFFFF",
+      "gradientType": "linear",
+      "gradientColor1": "#0A84FF",
+      "gradientColor2": "#BF5AF2",
+      "gradientAngle": 135,
+      "customFileUrl": "",
+      "overlayOpacity": 0,
+      "blurAmount": 0
+    }
+  }
+}

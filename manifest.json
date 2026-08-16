@@ -1,23 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "Liquid Glass - 極致液態玻璃新分頁",
-  "version": "5.3.0",
-  "description": "極致液態玻璃桌面、歷史搜尋智慧預測、自動雙向色彩調節、多國語言與自訂小工具新分頁。",
+  "name": "PrismTab",
+  "version": "0.0.0",
+  "description": "Google Chrome New Tab extension with liquid glass aesthetics, custom widgets workshop, and advanced customization.",
   "permissions": [
     "storage",
     "unlimitedStorage"
   ],
   "chrome_url_overrides": {
-    "newtab": "newtab.html"
+    "newtab": "src/newtab/newtab.html"
   },
-  "content_scripts": [
+  "options_page": "src/options/options.html",
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "sandbox": {
+    "pages": [
+      "src/shared/sandbox/sandbox.html"
+    ]
+  },
+  "web_accessible_resources": [
     {
+      "resources": [
+        "src/shared/sandbox/sandbox.html"
+      ],
       "matches": [
         "<all_urls>"
-      ],
-      "js": ["content.js"],
-      "css": ["content.css"],
-      "run_at": "document_end"
+      ]
     }
   ]
 }

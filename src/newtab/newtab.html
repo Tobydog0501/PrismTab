@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>PrismTab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+Mono+TC:wght@400;700&family=Lexend:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Noto+Sans+TC:wght@400;600;700&family=Noto+Serif+TC:wght@400;700&family=Orbitron:wght@600;800&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="icon" href="../../assets/icons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="../../assets/icons/icon-16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="../../assets/icons/icon-48.png" sizes="48x48">
+</head>
+<body class="light-theme">
+
+  <!-- Dynamic / Static Wallpaper Background -->
+  <div id="desktop-bg" aria-hidden="true"></div>
+  <canvas id="dynamic-wallpaper-canvas" class="dynamic-canvas"></canvas>
+
+  <!-- SVG Liquid Optical Refraction Filter -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;" aria-hidden="true">
+    <filter id="liquid-refraction" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence id="fe-turbulence" type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" result="noise"></feTurbulence>
+      <feDisplacementMap id="displacement-map" in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+    </filter>
+  </svg>
+
+  <!-- Smart Alignment Guides Layer -->
+  <div id="alignment-guides-container" class="alignment-guides-layer" aria-hidden="true">
+    <div id="snap-guide-x" class="snap-guide-line snap-guide-v"></div>
+    <div id="snap-guide-y" class="snap-guide-line snap-guide-h"></div>
+    <div id="equidistant-guide-1" class="equidistant-guide"></div>
+    <div id="equidistant-guide-2" class="equidistant-guide"></div>
+  </div>
+
+  <!-- Settings Trigger Button -->
+  <div class="settings-trigger" id="settings-trigger" title="Control Center">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+  </div>
+
+  <!-- Control Center Root Panel -->
+  <div class="liquid-glass control-panel" id="control-panel">
+    <div class="panel-header">
+      <div class="panel-title" id="lbl-control-panel-title">Control Center</div>
+      <div class="panel-close-btn" id="close-control-panel">✕</div>
+    </div>
+
+    <!-- Segmented Tab Switcher — 外觀 / 工具 / 進階功能 -->
+    <div class="settings-segmented-nav">
+      <button class="segmented-btn active" data-tab="tab-appearance" id="tab-btn-appearance">Appearance</button>
+      <button class="segmented-btn" data-tab="tab-tools" id="tab-btn-tools">Tools</button>
+      <button class="segmented-btn" data-tab="tab-advanced" id="tab-btn-advanced">Advanced</button>
+    </div>
+
+    <!-- ==================== Tab 1: 外觀 ==================== -->
+    <div class="settings-tab-content active" id="tab-appearance">
+      <!-- 語言 -->
+      <div class="panel-section-title" id="lbl-sec-language">Language</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-lang-select">Interface language</span></div>
+        <div class="custom-dropdown" id="language-dropdown" data-value="auto">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label" id="lang-dropdown-current">Auto-detect</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="auto">Auto-detect</div>
+            <div class="custom-dropdown-item" data-value="zh-TW">繁體中文</div>
+            <div class="custom-dropdown-item" data-value="zh-CN">简体中文</div>
+            <div class="custom-dropdown-item" data-value="en">English</div>
+            <div class="custom-dropdown-item" data-value="ja">日本語</div>
+            <div class="custom-dropdown-item" data-value="ko">한국어</div>
+            <div class="custom-dropdown-item" data-value="de">Deutsch</div>
+            <div class="custom-dropdown-item" data-value="fr">Français</div>
+            <div class="custom-dropdown-item" data-value="es">Español</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主題 -->
+      <div class="panel-section-title" id="lbl-sec-theme">Theme</div>
+      <div class="control-group flex-row">
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-bg-color">Background</span></div>
+          <div class="color-hex-row" style="margin-top: 4px;">
+            <input type="color" id="input-bg-color" value="#FFFFFF" class="color-input-native">
+            <span class="custom-editable" id="hex-bg-val" contenteditable="true" spellcheck="false">#FFFFFF</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-text-color">Text color</span></div>
+          <div class="color-hex-row" style="margin-top: 4px;">
+            <input type="color" id="input-text-color" value="#000000" class="color-input-native">
+            <span class="custom-editable" id="hex-text-val" contenteditable="true" spellcheck="false">#000000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 文字 -->
+      <div class="panel-section-title" id="lbl-sec-typography">Text</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-sys-font">Font</span></div>
+        <div class="custom-dropdown" id="font-family-dropdown" data-value="system">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">System Sans-Serif</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="system">System Sans-Serif</div>
+            <div class="custom-dropdown-item" data-value="inter">Inter</div>
+            <div class="custom-dropdown-item" data-value="outfit">Outfit</div>
+            <div class="custom-dropdown-item" data-value="poppins">Poppins</div>
+            <div class="custom-dropdown-item" data-value="plus-jakarta">Plus Jakarta Sans</div>
+            <div class="custom-dropdown-item" data-value="lexend">Lexend</div>
+            <div class="custom-dropdown-item" data-value="jetbrains-mono">JetBrains Mono</div>
+            <div class="custom-dropdown-item" data-value="fira-code">Fira Code</div>
+            <div class="custom-dropdown-item" data-value="noto-sans">Noto Sans TC</div>
+            <div class="custom-dropdown-item" data-value="noto-serif">Noto Serif TC</div>
+            <div class="custom-dropdown-item" data-value="lxgw-wenkai">LXGW WenKai</div>
+            <div class="custom-dropdown-item" data-value="jhenghei">Microsoft JhengHei</div>
+            <div class="custom-dropdown-item" data-value="georgia">Georgia</div>
+            <div class="custom-dropdown-item" data-value="playfair">Playfair Display</div>
+            <div class="custom-dropdown-item" data-value="cinzel">Cinzel</div>
+            <div class="custom-dropdown-item" data-value="orbitron">Orbitron</div>
+            <div class="custom-dropdown-item" data-value="montserrat">Montserrat</div>
+          </div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-font-weight">Weight</span><span class="val-badge" id="font-weight-val">500</span></div>
+        <div class="custom-slider" data-id="font-weight" data-min="100" data-max="900" data-val="500" data-step="100">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-font-size">Size</span><span class="val-badge" id="font-size-val">16px</span></div>
+        <div class="custom-slider" data-id="font-size" data-min="12" data-max="24" data-val="16">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+
+      <!-- 背景 -->
+      <div class="panel-section-title" id="lbl-sec-bg">Background</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-bg-upload">Upload</span></div>
+        <div class="custom-dropzone" id="bg-dropzone">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <div id="lbl-dropzone-text">Click or drop an image here</div>
+          <div style="font-size: 10px; opacity: 0.6; margin-top: 4px;" id="lbl-dropzone-sub">High-resolution images are saved to local IndexedDB</div>
+        </div>
+      </div>
+      <div class="control-group flex-row">
+        <div class="custom-btn secondary-btn sm" id="clear-bg-btn">Clear wallpaper</div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-bg-generate">Generate</span></div>
+        <div class="custom-gradient-preview" id="custom-gradient-preview" style="height: 64px; border-radius: 12px; margin-bottom: 10px; background: linear-gradient(135deg, #0A84FF, #BF5AF2);"></div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-grad-type">Gradient type</span></div>
+        <div class="custom-dropdown" id="gradient-type-dropdown" data-value="linear">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">Linear</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="linear">Linear</div>
+            <div class="custom-dropdown-item" data-value="radial">Radial</div>
+            <div class="custom-dropdown-item" data-value="conic">Conic</div>
+          </div>
+        </div>
+      </div>
+      <div class="control-group flex-row">
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-grad-start">Start color</span></div>
+          <div class="color-hex-row" style="margin-top: 2px;">
+            <input type="color" id="grad-color-1" value="#0A84FF" class="color-input-native">
+            <span class="custom-editable" id="grad-hex-1" contenteditable="true" spellcheck="false">#0A84FF</span>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <div class="control-label"><span id="lbl-grad-end">End color</span></div>
+          <div class="color-hex-row" style="margin-top: 2px;">
+            <input type="color" id="grad-color-2" value="#BF5AF2" class="color-input-native">
+            <span class="custom-editable" id="grad-hex-2" contenteditable="true" spellcheck="false">#BF5AF2</span>
+          </div>
+        </div>
+      </div>
+      <div class="control-group" id="grad-angle-group">
+        <div class="control-label"><span id="lbl-grad-angle">Angle</span><span class="val-badge" id="grad-angle-val">135°</span></div>
+        <div class="custom-slider" data-id="grad-angle" data-min="0" data-max="360" data-val="135">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="custom-btn theme-btn" id="apply-custom-gradient-btn">Apply gradient</div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-bg-details">Details</span></div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-wp-overlay">Overlay opacity</span><span class="val-badge" id="overlay-val">15%</span></div>
+        <div class="custom-slider" data-id="overlay" data-min="0" data-max="90" data-val="15">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-wp-blur">Background blur</span><span class="val-badge" id="bg-blur-val">0px</span></div>
+        <div class="custom-slider" data-id="bg-blur" data-min="0" data-max="40" data-val="0">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Tab 2: 工具 ==================== -->
+    <div class="settings-tab-content" id="tab-tools">
+      <!-- 時鐘與日期 -->
+      <div class="panel-section-title" id="lbl-sec-clock">Clock & date</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-native-clock">Enable clock & date</span>
+          <div class="custom-toggle active" id="toggle-native-clock"></div>
+        </div>
+      </div>
+
+      <!-- 搜尋列 -->
+      <div class="panel-section-title" id="lbl-sec-search">Search bar</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-native-search">Enable search bar</span>
+          <div class="custom-toggle active" id="toggle-native-search"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-choose-engine">Default search engine</span></div>
+        <div class="custom-dropdown" id="settings-engine-dropdown" data-value="google">
+          <div class="custom-dropdown-trigger"><span class="custom-dropdown-label">Google</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu">
+            <div class="custom-dropdown-item active" data-value="google">Google</div>
+            <div class="custom-dropdown-item" data-value="bing">Microsoft Bing</div>
+            <div class="custom-dropdown-item" data-value="duckduckgo">DuckDuckGo</div>
+            <div class="custom-dropdown-item" data-value="brave">Brave Search</div>
+            <div class="custom-dropdown-item" data-value="ecosia">Ecosia</div>
+            <div class="custom-dropdown-item" data-value="yahoo">Yahoo!</div>
+            <div class="custom-dropdown-item" data-value="baidu">Baidu</div>
+            <div class="custom-dropdown-item" data-value="github">GitHub</div>
+            <div class="custom-dropdown-item" data-value="youtube">YouTube</div>
+            <div class="custom-dropdown-item" data-value="custom">Custom engine</div>
+          </div>
+        </div>
+      </div>
+      <div class="control-group" id="custom-engine-settings-group" style="display: none;">
+        <div class="panel-section-title" id="lbl-custom-engine-title">Custom search engine</div>
+        <div class="control-group">
+          <div class="control-label"><span id="lbl-custom-engine-name">Engine name</span></div>
+          <input type="text" id="custom-engine-name" class="custom-panel-input" placeholder="e.g. Kagi Search">
+        </div>
+        <div class="control-group">
+          <div class="control-label"><span id="lbl-custom-engine-url">Search URL template (use %s for the query)</span></div>
+          <input type="text" id="custom-engine-url" class="custom-panel-input" placeholder="https://kagi.com/search?q=%s">
+        </div>
+        <div class="custom-btn theme-btn sm" id="save-custom-engine-btn">Save custom engine</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label" style="opacity:0.85; font-size:12px;" id="lbl-sec-search-settings">Search settings</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-search-newtab">Open results in a new tab</span>
+          <div class="custom-toggle active" id="search-newtab-toggle"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-search-history">Enable search history</span>
+          <div class="custom-toggle active" id="search-history-toggle"></div>
+        </div>
+      </div>
+
+      <!-- 導航器 -->
+      <div class="panel-section-title" id="lbl-sec-dock">Navigator</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-native-dock">Enable navigator</span>
+          <div class="custom-toggle active" id="toggle-native-dock"></div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label" style="opacity:0.85; font-size:12px;" id="lbl-dock-links">Link list</div>
+      </div>
+      <div class="control-group">
+        <div class="dock-links-list" id="dock-links-list">
+          <!-- Dynamically populated -->
+        </div>
+        <div class="control-group flex-row" style="margin-top: 10px;">
+          <div class="custom-btn secondary-btn sm" id="add-dock-item-btn">+ Add link</div>
+        </div>
+      </div>
+      <div class="panel-section-title" id="lbl-sec-notes">Notes</div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-native-notes">Add note</span>
+          <div class="custom-btn secondary-btn sm" id="add-note-btn">+ Add note</div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label" style="opacity:0.85; font-size:12px;" id="lbl-dock-settings">Navigator settings</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-reset-layout">Reset to default centered layout</span>
+          <div class="custom-btn secondary-btn sm" id="reset-layout-btn">Reset layout</div>
+        </div>
+      </div>
+
+      <!-- 更多配置 (註1) -->
+      <div class="panel-section-title" id="lbl-sec-more">More configuration</div>
+      <div class="control-group">
+        <p style="font-size: 11px; opacity: 0.7; line-height: 1.55; margin-bottom: 8px;" id="lbl-more-desc">
+          Write your own code. The system applies liquid-glass styling to the card chrome.
+        </p>
+        <div class="dock-links-list" id="custom-cards-list" style="max-height: 180px; margin-bottom: 10px;"></div>
+        <div class="control-group flex-row">
+          <div class="custom-btn theme-btn sm" id="open-card-builder-btn">+ Add custom card</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== Tab 3: 進階功能 ==================== -->
+    <div class="settings-tab-content" id="tab-advanced">
+      <!-- 快捷鍵 -->
+      <div class="panel-section-title" id="lbl-sec-hotkeys">Shortcuts</div>
+      <div class="control-group">
+        <p style="font-size: 11px; opacity: 0.7; line-height: 1.5; margin-bottom: 10px;" id="lbl-hotkeys-desc">Click a shortcut field, then press a new key combo. Press Esc to cancel.</p>
+        <div class="dock-links-list" id="hotkeys-list" style="max-height: 200px;">
+          <div class="hotkey-row" data-action="open-control">
+            <span class="hotkey-label" id="hk-lbl-open-control">Open control center</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+,">Ctrl + ,</button>
+          </div>
+          <div class="hotkey-row" data-action="focus-search">
+            <span class="hotkey-label" id="hk-lbl-focus-search">Focus search</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+K">Ctrl + K</button>
+          </div>
+          <div class="hotkey-row" data-action="reset-layout">
+            <span class="hotkey-label" id="hk-lbl-reset-layout">Reset layout</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+R">Ctrl + Shift + R</button>
+          </div>
+          <div class="hotkey-row" data-action="toggle-clock">
+            <span class="hotkey-label" id="hk-lbl-toggle-clock">Toggle clock</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+C">Ctrl + Shift + C</button>
+          </div>
+          <div class="hotkey-row" data-action="toggle-search">
+            <span class="hotkey-label" id="hk-lbl-toggle-search">Toggle search</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+S">Ctrl + Shift + S</button>
+          </div>
+          <div class="hotkey-row" data-action="toggle-dock">
+            <span class="hotkey-label" id="hk-lbl-toggle-dock">Toggle dock</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+D">Ctrl + Shift + D</button>
+          </div>
+          <div class="hotkey-row" data-action="add-note">
+            <span class="hotkey-label" id="hk-lbl-add-note">Add note</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+N">Ctrl + Shift + N</button>
+          </div>
+          <div class="hotkey-row" data-action="add-custom-card">
+            <span class="hotkey-label" id="hk-lbl-add-custom-card">Add custom card</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+W">Ctrl + Shift + W</button>
+          </div>
+          <div class="hotkey-row" data-action="export-config">
+            <span class="hotkey-label" id="hk-lbl-export-config">Export settings</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+E">Ctrl + Shift + E</button>
+          </div>
+          <div class="hotkey-row" data-action="clear-search">
+            <span class="hotkey-label" id="hk-lbl-clear-search">Clear search</span>
+            <button class="hotkey-bind-btn" type="button" data-default="Ctrl+Shift+X">Ctrl + Shift + X</button>
+          </div>
+        </div>
+        <div class="control-group flex-row" style="margin-top: 10px;">
+          <div class="custom-btn secondary-btn sm" id="reset-hotkeys-btn">Reset shortcuts</div>
+        </div>
+      </div>
+
+      <!-- 設定同步 -->
+      <div class="panel-section-title" id="lbl-sec-sync">Settings sync</div>
+      <div class="control-group">
+        <div class="control-label" style="opacity:0.85; font-size:12px;" id="lbl-sync-local">Local</div>
+      </div>
+      <div class="control-group flex-row">
+        <div class="custom-btn secondary-btn sm" id="export-config-btn">Export settings JSON</div>
+        <div class="custom-btn secondary-btn sm" id="import-config-btn">Import settings JSON</div>
+        <input type="file" id="import-config-file" accept=".json" style="display: none;">
+      </div>
+      <div class="control-group">
+        <div class="control-label" style="opacity:0.85; font-size:12px;" id="lbl-sync-cloud">Cloud (Chrome Sync across devices)</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span id="lbl-chrome-sync">Enable Chrome Sync</span>
+          <div class="custom-toggle active" id="chrome-sync-toggle"></div>
+        </div>
+        <p style="font-size: 10px; opacity: 0.55; margin-top: 4px; line-height: 1.4;" id="lbl-sync-hint">Uses chrome.storage.sync for cross-device settings. Sign in to Chrome and enable extension sync in chrome://settings/syncSetup.</p>
+      </div>
+      <div class="control-group flex-row" style="margin-top:6px;">
+        <div class="custom-btn secondary-btn sm" id="sync-now-btn">Sync to cloud now</div>
+        <div class="custom-btn secondary-btn sm" id="pull-sync-btn">Restore from cloud</div>
+      </div>
+
+      <div class="panel-section-title" id="lbl-sec-optics">Liquid glass optics</div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-glass-blur">Glass blur</span><span class="val-badge" id="blur-val">40px</span></div>
+        <div class="custom-slider" data-id="blur" data-min="0" data-max="64" data-val="40">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-glass-opacity">Glass opacity</span><span class="val-badge" id="opacity-val">14%</span></div>
+        <div class="custom-slider" data-id="opacity" data-min="0" data-max="60" data-val="14">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-border-opacity">Border opacity</span><span class="val-badge" id="border-opacity-val">12%</span></div>
+        <div class="custom-slider" data-id="border-opacity" data-min="0" data-max="100" data-val="12">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-saturate">Saturation</span><span class="val-badge" id="saturate-val">140%</span></div>
+        <div class="custom-slider" data-id="saturate" data-min="50" data-max="300" data-val="140">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-displacement">Refraction noise</span><span class="val-badge" id="displacement-val">8</span></div>
+        <div class="custom-slider" data-id="displacement" data-min="0" data-max="40" data-val="8">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-radius">Corner radius</span><span class="val-badge" id="radius-val">22px</span></div>
+        <div class="custom-slider" data-id="radius" data-min="0" data-max="48" data-val="22">
+          <div class="custom-slider-fill"></div>
+          <div class="custom-slider-thumb"></div>
+        </div>
+      </div>
+
+      <!-- 全域重置 -->
+      <div class="panel-section-title" id="lbl-sec-reset-all">Global reset</div>
+      <div class="control-group">
+        <button class="custom-btn reset-all-btn" id="reset-all-settings-btn">Reset all settings to defaults</button>
+      </div>
+    </div>
+    <div class="panel-resize-handle" id="panel-resize-handle" title="Resize control center"></div>
+  </div>
+
+
+    <!-- Custom Card Code Editor Modal (HTML / CSS / JS) -->
+  <div class="widget-hub-modal" id="card-builder-modal">
+    <div class="liquid-glass card-builder-content card-code-editor-content">
+      <div class="panel-header">
+        <div class="panel-title" id="lbl-card-builder-title">Custom card editor</div>
+        <div class="panel-close-btn" id="close-card-builder">✕</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-card-title-input">Card title</span></div>
+        <input type="text" id="card-builder-title-input" class="dock-modal-input" placeholder="My card" style="white-space:nowrap;">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-card-html">HTML</span></div>
+        <textarea id="card-html-input" rows="5" class="custom-panel-input font-mono" style="resize:vertical;min-height:90px;" placeholder="<div class=&quot;my-widget&quot;>Hello</div>"></textarea>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-card-css">CSS</span></div>
+        <textarea id="card-css-input" rows="4" class="custom-panel-input font-mono" style="resize:vertical;min-height:70px;" placeholder=".my-widget { padding: 8px; }"></textarea>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-card-js">JavaScript</span></div>
+        <textarea id="card-js-input" rows="4" class="custom-panel-input font-mono" style="resize:vertical;min-height:70px;" placeholder="// runs once when card is rendered"></textarea>
+      </div>
+      <p style="font-size:10px;opacity:0.55;margin:4px 0 10px;line-height:1.4;" id="lbl-card-editor-hint">Content appears below the drag handle without overlapping. Liquid-glass chrome is applied automatically.</p>
+      <div class="control-group flex-row">
+        <div class="custom-btn theme-btn" id="save-card-builder-btn">Save card</div>
+        <div class="custom-btn secondary-btn" id="cancel-card-builder-btn">Cancel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dock Item Editor Modal (Guaranteed High Contrast in Light/Dark Themes) -->
+  <div class="widget-hub-modal" id="dock-edit-modal">
+    <div class="liquid-glass dock-manager-content">
+      <div class="panel-header">
+        <div class="panel-title" id="dock-modal-title">Add quick link</div>
+        <div class="panel-close-btn" id="close-dock-modal">✕</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-title">Title</span></div>
+        <input type="text" id="dock-input-title" class="dock-modal-input" placeholder="e.g. GitHub">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-url">URL</span></div>
+        <input type="text" id="dock-input-url" class="dock-modal-input" placeholder="https://...">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span id="lbl-dock-input-icon">Icon text</span></div>
+        <input type="text" id="dock-input-icon" class="dock-modal-input" maxlength="3" placeholder="e.g. GH">
+      </div>
+      <div class="control-group flex-row" style="margin-top: 16px;">
+        <div class="custom-btn theme-btn" id="save-dock-item-btn">Save link</div>
+        <div class="custom-btn secondary-btn" id="cancel-dock-item-btn">Cancel</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clock Card Component -->
+  <div class="liquid-glass draggable-card" id="clock-card">
+    <div class="card-drag-handle" id="clock-drag-handle" title="Drag clock">⠿</div>
+    <div class="card-body">
+      <div class="time-display" id="time-display">00:00</div>
+      <div class="date-display" id="date-display">2026年 8月 14日</div>
+    </div>
+    <div class="clock-resize-handle" id="clock-resize-handle" title="Resize clock"></div>
+  </div>
+
+  <!-- Search Card Component -->
+  <div class="liquid-glass draggable-card" id="search-card">
+    <div class="card-body">
+      <div class="search-wrapper" id="search-wrapper">
+        <div class="card-drag-handle" id="search-drag-handle" title="Drag search">⠿</div>
+        <div class="custom-dropdown engine-dropdown" id="engine-dropdown" data-value="google">
+          <div class="custom-dropdown-trigger compact"><span class="custom-dropdown-label">Google</span><span class="custom-dropdown-arrow">▾</span></div>
+          <div class="custom-dropdown-menu drop-up">
+            <div class="custom-dropdown-item active" data-value="google">Google</div>
+            <div class="custom-dropdown-item" data-value="bing">Bing</div>
+            <div class="custom-dropdown-item" data-value="duckduckgo">DuckDuckGo</div>
+            <div class="custom-dropdown-item" data-value="github">GitHub</div>
+            <div class="custom-dropdown-item" data-value="baidu">Baidu</div>
+            <div class="custom-dropdown-item" data-value="youtube">YouTube</div>
+          </div>
+        </div>
+        <div class="search-input-box" id="search-input-box" contenteditable="true" spellcheck="false" data-placeholder="Search or enter a URL..."></div>
+        <div class="clear-search-btn" id="clear-search-btn" title="Clear input">✕</div>
+      </div>
+
+      <!-- Auto-loading Search History Dropdown -->
+      <div class="search-history-dropdown" id="search-history-dropdown">
+        <div class="search-history-header">
+          <span class="search-history-title">Search history</span>
+          <button class="clear-all-history-btn" id="clear-all-history-btn">Clear all</button>
+        </div>
+        <div class="search-history-list" id="search-history-list">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+      <div class="search-resize-handle" id="search-resize-handle" title="Resize search"></div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Dock (User Customizable) -->
+  <div class="liquid-dock draggable-card" id="liquid-dock">
+    <div class="card-drag-handle dock-drag-handle" id="dock-drag-handle" title="Drag dock">⠿</div>
+    <!-- Injected dynamically from storage -->
+  </div>
+
+  <script src="../shared/storage/indexeddb.js"></script>
+  <script src="newtab.js"></script>
+</body>
+</html>
