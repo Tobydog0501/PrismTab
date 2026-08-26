@@ -4,6 +4,27 @@
    Dynamic Contrast Adaptation & Spotless Scrollbars
    ========================================== */
 
+/* Keep your existing Chrome scrollbar CSS */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Add this for Firefox Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Ensure backdrop-filters are standard */
+.glass-panel {
+  -webkit-backdrop-filter: blur(10px); /* Chrome/Safari */
+  backdrop-filter: blur(10px); /* Firefox Standard */
+  transform: translateZ(0);
+}
 :root {
   --text-color: #000000;
   --bg-color: #FFFFFF;
@@ -133,7 +154,11 @@ body::after {
     rgba(255, 255, 255, calc(var(--opacity) * 0.7)) 100%
   );
   -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) contrast(var(--contrast)) hue-rotate(var(--hue-rotate)) url(#liquid-refraction);
-  backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) contrast(var(--contrast)) hue-rotate(var(--hue-rotate)) url(#liquid-refraction);
+  
+  /* FIX: Firefox drops the whole line if url() is combined with blur(). Removed url() for standard syntax */
+  backdrop-filter: blur(var(--blur)) saturate(var(--saturate)) contrast(var(--contrast)) hue-rotate(var(--hue-rotate));
+  
+  transform: translateZ(0);
   border: 1px solid rgba(255, 255, 255, var(--border-opacity));
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.42),
@@ -859,6 +884,7 @@ body.light-theme .custom-slider-track {
   border: 0.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 50%;
   backdrop-filter: blur(24px) saturate(180%);
+  transform: translateZ(0);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   color: var(--text-color);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -1323,6 +1349,7 @@ body.light-theme .custom-toggle.active::after {
   min-width: 100%;
   background: var(--bg-color, rgba(18, 18, 20, 0.95));
   backdrop-filter: blur(28px);
+  transform: translateZ(0);
   -webkit-backdrop-filter: blur(28px);
   border: 0.5px solid rgba(255, 255, 255, 0.16);
   border-radius: 14px;
@@ -1457,6 +1484,7 @@ body.light-theme .custom-toggle.active::after {
   padding: 1px 4px;
   border-radius: 4px;
   backdrop-filter: blur(4px);
+  transform: translateZ(0);
 }
 
 /* ==========================================
@@ -1620,6 +1648,7 @@ body.light-theme .custom-toggle.active::after {
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(12px);
+  transform: translateZ(0);
   -webkit-backdrop-filter: blur(12px);
   z-index: 300;
   align-items: center;
@@ -1944,6 +1973,7 @@ body.light-theme .search-wrapper:focus {
   margin-top: 8px;
   background: rgba(20, 24, 36, 0.92);
   backdrop-filter: blur(28px) saturate(180%);
+  transform: translateZ(0);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 0.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
@@ -2288,6 +2318,7 @@ body.light-theme .note-header {
   border: 0.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 20px;
   backdrop-filter: blur(32px) saturate(140%);
+  transform: translateZ(0);
   -webkit-backdrop-filter: blur(32px) saturate(140%);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), inset 0 0.5px 0 rgba(255, 255, 255, 0.3);
   z-index: 30;
@@ -2840,7 +2871,11 @@ body.light-theme .builder-props-field input { background: #fff; border-color: rg
     rgba(255, 255, 255, calc(var(--opacity, 0.12) * 0.7)) 100%
   ) !important;
   -webkit-backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) url(#liquid-refraction) !important;
-  backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) url(#liquid-refraction) !important;
+  
+  /* FIX: Removed url() for Firefox */
+  backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) !important;
+  
+  transform: translateZ(0);
   border: 1px solid rgba(255, 255, 255, var(--border-opacity, 0.16)) !important;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.42),
@@ -2915,6 +2950,7 @@ body.light-theme .builder-props-field input { background: #fff; border-color: rg
   box-shadow: none !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+  transform: translateZ(0);
   overflow: auto;
   flex: 1 1 auto;
   min-height: 48px;
@@ -2965,7 +3001,11 @@ body.light-theme .builder-props-field input { background: #fff; border-color: rg
     rgba(255, 255, 255, calc(var(--opacity, 0.12) * 0.7)) 100%
   ) !important;
   -webkit-backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) url(#liquid-refraction) !important;
-  backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) url(#liquid-refraction) !important;
+  
+  /* FIX: Removed url() for Firefox */
+  backdrop-filter: blur(var(--blur, 36px)) saturate(var(--saturate, 180%)) contrast(var(--contrast, 108%)) hue-rotate(var(--hue-rotate, 0deg)) !important;
+  
+  transform: translateZ(0);
   /* Avoid nested stacking that can split the blur sample */
   isolation: auto !important;
   overflow: hidden;
@@ -2976,6 +3016,7 @@ body.light-theme .builder-props-field input { background: #fff; border-color: rg
   background: transparent !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+  transform: translateZ(0);
   border: none !important;
   box-shadow: none !important;
   outline: none !important;

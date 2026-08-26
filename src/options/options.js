@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Open new tab button
   document.getElementById('btn-open-newtab')?.addEventListener('click', () => {
-    if (typeof chrome !== 'undefined' && chrome.tabs) {
-      chrome.tabs.create({ url: 'chrome://newtab' });
+    if (typeof chrome !== 'undefined' && browser.tabs) {
+      browser.tabs.create({ url: 'chrome://newtab' });
     } else {
       window.open('newtab.html', '_blank');
     }
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Load existing config
   let currentConfig = {};
-  if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get(['prism_custom_config'], (res) => {
+  if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+    browser.storage.local.get(['prism_custom_config'], (res) => {
       if (res && res.prism_custom_config) {
         applyLoadedConfig(res.prism_custom_config);
       }
@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       chromeSync: document.getElementById('opt-chrome-sync')?.checked ?? true,
     };
 
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ prism_custom_config: newConfig }, () => {
+    if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+      browser.storage.local.set({ prism_custom_config: newConfig }, () => {
         showFeedback();
       });
     } else {
@@ -182,8 +182,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cfg = data.prism_custom_config || data;
         applyLoadedConfig(cfg);
         currentConfig = cfg;
-        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-          chrome.storage.local.set({ prism_custom_config: cfg }, () => showFeedback());
+        if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+          browser.storage.local.set({ prism_custom_config: cfg }, () => showFeedback());
         } else {
           localStorage.setItem('prism_custom_config', JSON.stringify(cfg));
           showFeedback();
@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         chromeSync: true,
       };
       applyLoadedConfig(defaultConfig);
-      if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.set({ prism_custom_config: defaultConfig }, () => {
+      if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+        browser.storage.local.set({ prism_custom_config: defaultConfig }, () => {
           showFeedback();
         });
       } else {

@@ -1,13 +1,13 @@
 // ==========================================
 // PrismTab — Chrome New Tab Extension v0.0.0
 // Liquid Glass Aesthetics & 100% User-Customized Architecture
-// Storage: chrome.storage.local & IndexedDB (PrismTabDB)
+// Storage: browser.storage.local & IndexedDB (PrismTabDB)
 // ==========================================
 
 const TRANSLATIONS = {
   'zh-TW': {
     enableSearchHistory: "啟用搜尋歷史記錄清單",
-    syncHint: "使用 chrome.storage.sync 跨裝置同步設定。需登入 Chrome 帳號，並在 chrome://settings/syncSetup 啟用「擴充功能」同步。",
+    syncHint: "使用 browser.storage.sync 跨裝置同步設定。需登入 Chrome 帳號，並在 chrome://settings/syncSetup 啟用「擴充功能」同步。",
     notesAction: "新增備忘錄",
     enableDock: "啟用導航器",
     enableSearch: "啟用搜尋列",
@@ -227,7 +227,7 @@ const TRANSLATIONS = {
   },
   'zh-CN': {
     enableSearchHistory: "启用搜索历史记录列表",
-    syncHint: "使用 chrome.storage.sync 跨设备同步设置。请登录 Chrome 账号，并在 chrome://settings/syncSetup 启用「扩展程序」同步。",
+    syncHint: "使用 browser.storage.sync 跨设备同步设置。请登录 Chrome 账号，并在 chrome://settings/syncSetup 启用「扩展程序」同步。",
     notesAction: "新增备忘录",
     enableDock: "启用导航器",
     enableSearch: "启用搜索栏",
@@ -441,7 +441,7 @@ const TRANSLATIONS = {
   },
   en: {
     enableSearchHistory: "Enable search history",
-    syncHint: "Uses chrome.storage.sync for cross-device settings. Sign in to Chrome and enable extension sync in chrome://settings/syncSetup.",
+    syncHint: "Uses browser.storage.sync for cross-device settings. Sign in to Chrome and enable extension sync in chrome://settings/syncSetup.",
     notesAction: "Add note",
     enableDock: "Enable navigator",
     enableSearch: "Enable search bar",
@@ -449,7 +449,7 @@ const TRANSLATIONS = {
     cloudSync: "Cloud (Chrome Sync across devices)",
     localSync: "Local",
     secNotes: "Notes",
-    moreDesc: "Write your own code. The system applies liquid-glass styling to the card chrome.",
+    moreDesc: "Write your own code. The system applies liquid-glass styling to the card browser.",
     hotkeysDesc: "Click a shortcut field, then press a new key combo. Press Esc to cancel.",
     cardEditorHint: "Content appears below the drag handle without overlapping. Liquid-glass chrome is applied automatically.",
     hkFocusSearch: "Focus search",
@@ -661,7 +661,7 @@ const TRANSLATIONS = {
   },
   ja: {
     enableSearchHistory: "検索履歴を有効化",
-    syncHint: "chrome.storage.sync で端末間同期します。Chrome にログインし、chrome://settings/syncSetup で拡張機能の同期を有効にしてください。",
+    syncHint: "browser.storage.sync で端末間同期します。Chrome にログインし、chrome://settings/syncSetup で拡張機能の同期を有効にしてください。",
     notesAction: "メモを追加",
     enableDock: "ナビゲーターを有効化",
     enableSearch: "検索バーを有効化",
@@ -875,7 +875,7 @@ const TRANSLATIONS = {
   },
   ko: {
     enableSearchHistory: "검색 기록 사용",
-    syncHint: "chrome.storage.sync로 기기 간 설정을 동기화합니다. Chrome에 로그인하고 chrome://settings/syncSetup에서 확장 프로그램 동기화를 켜세요.",
+    syncHint: "browser.storage.sync로 기기 간 설정을 동기화합니다. Chrome에 로그인하고 chrome://settings/syncSetup에서 확장 프로그램 동기화를 켜세요.",
     notesAction: "메모 추가",
     enableDock: "내비게이터 사용",
     enableSearch: "검색바 사용",
@@ -1089,7 +1089,7 @@ const TRANSLATIONS = {
   },
   de: {
     enableSearchHistory: "Suchverlauf aktivieren",
-    syncHint: "Nutzt chrome.storage.sync für geräteübergreifende Einstellungen. In Chrome anmelden und unter chrome://settings/syncSetup die Erweiterungssynchronisierung aktivieren.",
+    syncHint: "Nutzt browser.storage.sync für geräteübergreifende Einstellungen. In Chrome anmelden und unter chrome://settings/syncSetup die Erweiterungssynchronisierung aktivieren.",
     notesAction: "Notiz hinzufügen",
     enableDock: "Navigator aktivieren",
     enableSearch: "Suchleiste aktivieren",
@@ -1303,7 +1303,7 @@ const TRANSLATIONS = {
   },
   fr: {
     enableSearchHistory: "Activer l’historique de recherche",
-    syncHint: "Utilise chrome.storage.sync pour synchroniser entre appareils. Connectez-vous à Chrome et activez la sync des extensions dans chrome://settings/syncSetup.",
+    syncHint: "Utilise browser.storage.sync pour synchroniser entre appareils. Connectez-vous à Chrome et activez la sync des extensions dans chrome://settings/syncSetup.",
     notesAction: "Ajouter une note",
     enableDock: "Activer le navigateur",
     enableSearch: "Activer la barre de recherche",
@@ -1517,7 +1517,7 @@ const TRANSLATIONS = {
   },
   es: {
     enableSearchHistory: "Activar historial de búsqueda",
-    syncHint: "Usa chrome.storage.sync para sincronizar entre dispositivos. Inicia sesión en Chrome y activa la sincronización de extensiones en chrome://settings/syncSetup.",
+    syncHint: "Usa browser.storage.sync para sincronizar entre dispositivos. Inicia sesión en Chrome y activa la sincronización de extensiones en chrome://settings/syncSetup.",
     notesAction: "Añadir nota",
     enableDock: "Activar navegador",
     enableSearch: "Activar barra de búsqueda",
@@ -1818,7 +1818,7 @@ let currentGradientState = null;
 // ==========================================
 let useChromeSync = true; // preference only; frequent writes always go to local
 
-// Debounce helper to avoid chrome.storage quota (MAX_WRITE_OPERATIONS_PER_MINUTE)
+// Debounce helper to avoid browser.storage quota (MAX_WRITE_OPERATIONS_PER_MINUTE)
 function createDebounced(fn, wait) {
   let t = null;
   let lastArgs = null;
@@ -1844,9 +1844,9 @@ const AppStorage = {
   // Always prefer local for get/set to avoid sync write quota during slider drags.
   // Chrome Sync is only used via pushToSync / pullFromSync.
   get: (keys, cb) => {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.get(keys, (res) => {
-        if (chrome.runtime && chrome.runtime.lastError) {
+    if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+      browser.storage.local.get(keys, (res) => {
+        if (browser.runtime && browser.runtime.lastError) {
           // swallow quota/runtime errors
           cb(res || {});
           return;
@@ -1859,15 +1859,15 @@ const AppStorage = {
         try {
           const v = localStorage.getItem('lg_' + k);
           if (v) res[k] = JSON.parse(v);
-        } catch (e) {}
+        } catch (e) { }
       });
       cb(res);
     }
   },
   set: (items, cb) => {
-    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set(items, () => {
-        if (chrome.runtime && chrome.runtime.lastError) {
+    if (typeof chrome !== 'undefined' && browser.storage && browser.storage.local) {
+      browser.storage.local.set(items, () => {
+        if (browser.runtime && browser.runtime.lastError) {
           // Ignore quota errors on local (rare); still call cb
           if (cb) cb();
           return;
@@ -1878,19 +1878,19 @@ const AppStorage = {
       Object.entries(items).forEach(([k, v]) => {
         try {
           localStorage.setItem('lg_' + k, JSON.stringify(v));
-        } catch (e) {}
+        } catch (e) { }
       });
       if (cb) cb();
     }
   },
   clear: (cb) => {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
+    if (typeof chrome !== 'undefined' && browser.storage) {
       const done = () => { if (cb) cb(); };
-      if (chrome.storage.local) chrome.storage.local.clear(() => {
-        if (chrome.storage.sync) chrome.storage.sync.clear(done);
+      if (browser.storage.local) browser.storage.local.clear(() => {
+        if (browser.storage.sync) browser.storage.sync.clear(done);
         else done();
       });
-      else if (chrome.storage.sync) chrome.storage.sync.clear(done);
+      else if (browser.storage.sync) browser.storage.sync.clear(done);
       else done();
     } else {
       try {
@@ -1900,33 +1900,33 @@ const AppStorage = {
           if (k && k.startsWith('lg_')) keysToRemove.push(k);
         }
         keysToRemove.forEach((k) => localStorage.removeItem(k));
-      } catch (e) {}
+      } catch (e) { }
       if (cb) cb();
     }
   },
   // Explicit sync helpers
   pushToSync: (cb) => {
-    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync || !chrome.storage.local) {
+    if (typeof chrome === 'undefined' || !browser.storage || !browser.storage.sync || !browser.storage.local) {
       if (cb) cb(new Error('Chrome Sync unavailable'));
       return;
     }
-    chrome.storage.local.get(null, (all) => {
-      chrome.storage.sync.set(all, () => {
-        if (cb) cb(chrome.runtime && chrome.runtime.lastError ? chrome.runtime.lastError : null);
+    browser.storage.local.get(null, (all) => {
+      browser.storage.sync.set(all, () => {
+        if (cb) cb(browser.runtime && browser.runtime.lastError ? browser.runtime.lastError : null);
       });
     });
   },
   pullFromSync: (cb) => {
-    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
+    if (typeof chrome === 'undefined' || !browser.storage || !browser.storage.sync) {
       if (cb) cb(new Error('Chrome Sync unavailable'));
       return;
     }
-    chrome.storage.sync.get(null, (data) => {
-      if (chrome.runtime && chrome.runtime.lastError) {
-        if (cb) cb(chrome.runtime.lastError);
+    browser.storage.sync.get(null, (data) => {
+      if (browser.runtime && browser.runtime.lastError) {
+        if (cb) cb(browser.runtime.lastError);
         return;
       }
-      chrome.storage.local.set(data || {}, () => {
+      browser.storage.local.set(data || {}, () => {
         if (cb) cb(null, data);
       });
     });
@@ -2033,11 +2033,11 @@ function applyLanguage(selectedLang) {
   setText('lbl-dock-links', t('dockLinks', 'Link list'));
   setText('lbl-dock-settings', t('dockSettings', 'Navigator settings'));
   setText('lbl-sec-more', t('secMore', 'More configuration'));
-  setText('lbl-more-desc', t('moreDesc', 'Write your own code. The system applies liquid-glass styling to the card chrome.'));
+  setText('lbl-more-desc', t('moreDesc', 'Write your own code. The system applies liquid-glass styling to the card browser.'));
   setText('lbl-sec-hotkeys', t('secHotkeys', 'Shortcuts'));
   setText('lbl-hotkeys-desc', t('hotkeysDesc', 'Click a shortcut field, then press a new key combo. Press Esc to cancel.'));
   setText('lbl-sec-sync', t('secSync', 'Settings sync'));
-  
+
   setText('lbl-native-clock', t('enableClock', 'Enable clock & date'));
   setText('lbl-native-search', t('enableSearch', 'Enable search bar'));
   setText('lbl-native-dock', t('enableDock', 'Enable navigator'));
@@ -2045,7 +2045,7 @@ function applyLanguage(selectedLang) {
   setText('lbl-search-history', t('enableSearchHistory', t('searchHistory', 'Enable search history')));
   setText('lbl-sync-local', t('localSync', 'Local'));
   setText('lbl-sync-cloud', t('cloudSync', 'Cloud (Chrome Sync across devices)'));
-  setText('lbl-sync-hint', t('syncHint', 'Uses chrome.storage.sync for cross-device settings. Sign in to Chrome and enable extension sync in chrome://settings/syncSetup.'));
+  setText('lbl-sync-hint', t('syncHint', 'Uses browser.storage.sync for cross-device settings. Sign in to Chrome and enable extension sync in chrome://settings/syncSetup.'));
 
   setText('lbl-chrome-sync', t('chromeSync', 'Enable Chrome Sync'));
   setText('lbl-sec-optics', t('secOptics', 'Liquid glass optics'));
@@ -4310,7 +4310,7 @@ async function handleFile(file) {
     currentGradientState = null;
     try {
       localStorage.removeItem('liquid_glass_custom_gradient');
-    } catch (e) {}
+    } catch (e) { }
     const blobUrl = await LiquidGlassDB.saveBgImage(file);
     const bgContainer = document.getElementById('desktop-bg');
     if (bgContainer && blobUrl) {
@@ -4337,7 +4337,7 @@ async function clearBackground() {
   currentGradientState = null;
   try {
     localStorage.removeItem('liquid_glass_custom_gradient');
-  } catch (e) {}
+  } catch (e) { }
   const bgContainer = document.getElementById('desktop-bg');
   if (bgContainer) bgContainer.style.backgroundImage = 'none';
   await LiquidGlassDB.clearBgImage();
@@ -4672,7 +4672,7 @@ async function applyCustomGradient() {
 
   try {
     localStorage.setItem('liquid_glass_custom_gradient', JSON.stringify(currentGradientState));
-  } catch (e) {}
+  } catch (e) { }
 
   const dropzone = document.getElementById('bg-dropzone');
   const dict = TRANSLATIONS[resolvedLanguage] || TRANSLATIONS.en || TRANSLATIONS['zh-TW'];
@@ -5254,7 +5254,7 @@ async function loadSettings() {
           }
         }
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   return new Promise((resolve) => {
@@ -5770,7 +5770,7 @@ function createOrUpdateCustomWidgetCard(widget, idx) {
       renderCustomCardsList();
     });
   }
-      const body = card.querySelector('.user-custom-body');
+  const body = card.querySelector('.user-custom-body');
   if (body) {
     // Render HTML/CSS in the SAME document as the liquid-glass shell so backdrop-filter
     // stays continuous (no iframe seam / mid-card split).
@@ -5800,8 +5800,8 @@ function createOrUpdateCustomWidgetCard(widget, idx) {
     // Optional JS: run inside hidden extension sandbox (CSP-safe). Visual content stays in-DOM.
     let runner = document.getElementById('prism-js-sandbox-frame');
     if (jsc && String(jsc).trim()) {
-      const sandboxUrl = (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL)
-        ? chrome.runtime.getURL('src/shared/sandbox/sandbox.html')
+      const sandboxUrl = (typeof chrome !== 'undefined' && browser.runtime && browser.runtime.getURL)
+        ? browser.runtime.getURL('src/shared/sandbox/sandbox.html')
         : '../shared/sandbox/sandbox.html';
 
       const runJs = function () {
