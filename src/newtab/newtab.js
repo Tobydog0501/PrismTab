@@ -5321,6 +5321,16 @@ function applyConfig(cfg, hasCustomImage = false) {
     setDropdownValue('settings-engine-dropdown', cfg.searchEngine);
   }
 
+  if (typeof cfg.searchInNewTab === 'boolean') {
+    searchInNewTab = cfg.searchInNewTab;
+    setToggle('search-newtab-toggle', searchInNewTab);
+  }
+
+  if (typeof cfg.searchHistoryEnabled === 'boolean') {
+    searchHistoryEnabled = cfg.searchHistoryEnabled;
+    setToggle('search-history-toggle', searchHistoryEnabled);
+  }
+
   // Restore gradient wallpaper if no custom photo uploaded
   const gradCfg = cfg.wallpaperGradient || currentGradientState;
   if (!hasCustomImage && gradCfg && gradCfg.enabled && gradCfg.css) {
