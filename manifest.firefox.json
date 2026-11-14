@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+  "name": "PrismTab",
+  "version": "0.0.0",
+  "description": "Google Chrome New Tab extension with liquid glass aesthetics, custom widgets workshop, and advanced customization.",
+  "permissions": [
+    "storage",
+    "unlimitedStorage"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "src/newtab/newtab.html"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "prismtab@tobydog0501",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  }
+}

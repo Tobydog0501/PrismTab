@@ -85,6 +85,12 @@
 ### Optional: pack for distribution
 Use “Pack extension” on `chrome://extensions` only when you intentionally distribute a `.crx`. For personal use, unpacked loading is enough.
 
+### Firefox
+Firefox uses a separate Manifest V2 file (`manifest.firefox.json`) so custom-widget JavaScript can run (Firefox MV3 forbids `unsafe-eval`).
+1. Run `bash scripts/package.sh` (requires `zip`). It creates `dist/chrome/`, `dist/firefox/` and a zip for each.
+2. Open `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on…** → select `dist/firefox/manifest.json`.
+3. For a permanent install, submit `dist/PrismTab-firefox.zip` to addons.mozilla.org for signing.
+
 ---
 
 ## Structure
@@ -187,7 +193,8 @@ Advanced
 - Match the settings tree terminology so language switches do not change meaning of controls.
 
 ### Browser & OS
-- Optimized for desktop Chrome New Tab.
+- Optimized for desktop Chrome New Tab; also supported on desktop Firefox 109+ (see [Firefox](#firefox)).
+- Firefox does not support SVG filters in `backdrop-filter`, so the `#liquid-refraction` distortion is omitted there (blur and tint remain).
 - `backdrop-filter` quality depends on GPU/compositor; very old hardware may show reduced blur.
 
 ---

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Open new tab button
   document.getElementById('btn-open-newtab')?.addEventListener('click', () => {
     if (typeof chrome !== 'undefined' && chrome.tabs) {
-      chrome.tabs.create({ url: 'chrome://newtab' });
+      chrome.tabs.create({});
     } else {
       window.open('newtab.html', '_blank');
     }
