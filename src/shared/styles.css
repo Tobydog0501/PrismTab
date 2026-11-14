@@ -322,10 +322,6 @@ body.light-theme .equidistant-line-v {
 }
 
 /* Light mode adaptation */
-body.light-theme::after {
-  background: rgba(255, 255, 255, var(--overlay-opacity));
-}
-
 body.light-theme .liquid-glass {
   /* Same --opacity driven tint as dark mode, slightly stronger for legibility */
   background: linear-gradient(
@@ -3009,7 +3005,7 @@ body.light-theme .builder-props-field input { background: #fff; border-color: rg
 @supports (-moz-appearance: none) {
   :root {
     --ff-glass-blur-scale: 0.5;
-    --ff-glass-saturate-scale: 0.8;
+    --ff-glass-saturate-scale: 1;
   }
   .liquid-glass {
     backdrop-filter: blur(calc(var(--blur) * var(--ff-glass-blur-scale))) saturate(calc(var(--saturate) * var(--ff-glass-saturate-scale))) contrast(var(--contrast)) hue-rotate(var(--hue-rotate));
